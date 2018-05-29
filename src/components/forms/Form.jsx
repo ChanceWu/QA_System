@@ -193,21 +193,7 @@ class Forms extends React.Component {
                 data2: result.data.askId,
             });
             var div1=document.getElementById('dialog');
-            var div2=document.getElementById('inputBox');
-            console.log(div1.scrollHeight+": "+div1.clientHeight);
-            console.log(div2.scrollHeight+": "+div2.clientHeight);
-            div2.style.top = div1.scrollHeight+"px";
-            console.log(div2.style.top);
-            //alert("顶部："+div1.scrollTop+"高度："+div1.scrollHeight+"差值："+(div1.scrollHeight-div1.scrollTop));
             div1.scrollTop=div1.scrollHeight;
-            /*
-            *  图片加载有延迟，导致渲染后输入框隐藏在对话窗口下面
-            *  判断回答中是否含有图片，减去图片大小使得显示在对话框中
-            */
-            if(res.photo != ""){
-                div2.style.top = div1.scrollHeight-parseInt("120")+"px";
-            }
-            
             this.setState({
                 inputHeight: div1.scrollHeight
             });
@@ -241,33 +227,24 @@ class Forms extends React.Component {
                                     {/*<div styleName="caption" id="caption"></div>*/}
                                 </div>
                                 {this.state.cards}
+                                
+                            </Col>
+                            <Col id="dialog"  xs={{ span: 24, offset: 0 }} sm={{ span: 24, offset: 0 }} md={{ span: 24, offset: 0 }} lg={{ span: 14, offset: 1 }} >
                                 <div id="inputBox" className="chatCol_Input" >
                                     <form onSubmit={this.handleSubmit}>
                                         <label className="lab">
                                             {
-                                                window.screen.availWidth > 900
-                                                &&
                                                 "请输入问题:"
-                                            }
-                                            {
-                                                window.screen.availWidth < 900
-                                                &&
-                                                "问问:"
                                             }
                                              <input id="question" className="longer" type="text" value={this.state.value} onChange={this.handleChange} />
                                         </label>
                                         <input className="bigger" type="submit" value="Submit" />
                                     </form>
                                 </div>
+                                
                             </Col>
 
                         </div>
-                        {
-                            window.screen.availWidth < 900
-                            &&
-                            <Col className="mobile_box" xs={{ span: 21, offset: 1 }} sm={{ span: 21, offset: 1 }} md={{ span: 21, offset: 1 }} >
-                            </Col>
-                        }
                         <Col className="hotCol" xs={{ span: 21, offset: 1 }} sm={{ span: 21, offset: 1 }} md={{ span: 21, offset: 1 }} lg={{ span: 6, offset: 1 }} >
                             <div>
                                 <h2>常见问题</h2>
