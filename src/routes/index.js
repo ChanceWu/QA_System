@@ -8,6 +8,9 @@ import Index from '../components/home/Index';
 import Form from '../components/forms/Form';
 
 import AdminHome from '../components/admin/AdminHome';
+import Adminanswer from '../components/admin/answer';
+  import AdminUser from '../components/admin/User';
+   import AdminFedBack from '../components/admin/FedBack';
 // import AuthBasic from '../components/auth/Basic';
 // import RouterEnter from '../components/auth/RouterEnter';
 // import Cssmodule from '../components/cssmodule';
@@ -29,7 +32,10 @@ export default class CRouter extends Component {
                 <Route exact path="/app/form/Form" component={Form} />
 
                 <Route component={AdminHome} path='/app/admin/adminHome' />
-                
+                <Route component={Adminanswer} path='/app/admin/answer' />
+                 <Route component={AdminUser} path='/app/admin/User' />
+                 <Route component={AdminFedBack} path='/app/admin/FedBack' />
+
                 {/*<Route exact path="/app/auth/basic" component={AuthBasic} />
                 <Route exact path="/app/auth/routerEnter" component={(props) => this.requireAuth('auth/testPage', <RouterEnter {...props} />)} />
 
