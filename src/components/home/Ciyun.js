@@ -23,7 +23,7 @@ export default class Ciyun extends React.Component {
         	// $("#menuId li:first").attr("class"," ant-menu-item ");
         	// $("#menuId li:last").attr("class"," ant-menu-item ant-menu-item-selected ");
 		    console.log(this);
-		    window.location.href="http://localhost:3006/#/app/form/Form?value="+params.data.name+"&key=1";
+		    window.location.href="/#/app/ask/Ask?value="+params.data.name+"&key=1";
 		});
         window.onresize=myChart.resize;
     }

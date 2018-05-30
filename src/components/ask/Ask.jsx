@@ -8,10 +8,22 @@ import styles from './styles.less';
 import b1 from "../../style/imgs/answer.jpg";
 import b2 from "../../style/imgs/swust.jpg";
 import b3 from "../../style/imgs/11.png";
+import {
+    connect
+} from 'react-redux';
+import {
+    getQuestionAnswer,
+    feedback,
+} from '../../action/ask';
 $.ajaxSetup({
-        async : true
-        });
-class Forms extends React.Component {
+    async : true
+});
+@connect(state => ({
+    ask: state.ask,
+}))
+@CSSModules(styles)
+
+class Ask extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -75,6 +87,7 @@ class Forms extends React.Component {
     }
 
     handleSubmit(event) {
+        event.preventDefault();
         var appName=navigator;
         console.log(appName);
         this.state.userId=getCookie('userId');
@@ -113,7 +126,6 @@ class Forms extends React.Component {
             document.cookie=c_name+ "=" +escape(uuid)+((expiredays==null) ? "" : "; expires="+exdate.toGMTString());
         }
 
-
         this.state.cards.push(
             <div key={this.state.i++}>
                 <div className="question_logo" >
@@ -129,91 +141,100 @@ class Forms extends React.Component {
         
         this.setState({
         });
-        this.serverRequest = $.get("http://qa.ksust.com/ask.do",{question:this.state.value,userIdentity:this.state.userId}, function (result) {
-            console.log(result);
-            console.log(" : "+result.data.answerList[0]);
-            var res = result.data.answerList[0];
-            var regexp = /(http:\/\/|https:\/\/)((\w|=|\?|\.|\/|\&|-|~)+)/g;
-            var content = res.answer!=null ? res.answer+"":"很抱歉，没找到答案，请换个问题试试...";
-            var reg = "";
-            content = content.replace(regexp, function($url){
-                reg = $url;
-                return "$url";
-            });
-            var word1 = content.split("$url")[0];
-            var word2 = content.split("$url")[1];
-            console.log(word1+reg.link(reg)+word2);
-            // alert(res.owner.login);
-            // console.log(res.answer);
-            this.setState({
-                questionId: res.questionId,
-            });
-            
-            this.state.cards.push(
-                <div key={this.state.i++}>
-                    <div className="answer_logo" >
-                        <img src={b2} />
+        this.props.dispatch(getQuestionAnswer({
+            question:this.state.value,
+            userIdentity:this.state.userId
+        })).then(() => {
+            console.log('this.props.ask');
+            console.log(this.props.ask);
+            if(!!this.props.ask.getQuestionAnswer){
+                var res = this.props.ask.getQuestionAnswer.data.answerList[0];
+                var regexp = /(http:\/\/|https:\/\/)((\w|=|\?|\.|\/|\&|-|~)+)/g;
+                var content = res.answer!=null ? res.answer+"":"很抱歉，没找到答案，请换个问题试试...";
+                var reg = "";
+                content = content.replace(regexp, function($url){
+                    reg = $url;
+                    return "$url";
+                });
+                var word1 = content.split("$url")[0];
+                var word2 = content.split("$url")[1];
+                console.log(word1+reg.link(reg)+word2);
+                // alert(res.owner.login);
+                // console.log(res.answer);
+                this.setState({
+                    questionId: res.questionId,
+                });
+                
+                this.state.cards.push(
+                    <div key={this.state.i++}>
+                        <div className="answer_logo" >
+                            <img src={b2} />
+                        </div>
+                        <div>
+                            <Card className="answer_margin" bordered={false} >
+                                {/*<img onLoad={this.handleColChange} styleName="real" src="https://avatars3.githubusercontent.com/u/583231?v=4" id="real" alt="model test picture" onClick={this.setImgPreview} />*/}
+                                
+                                {
+                                    reg.match(/(http:\/\/|https:\/\/)((\w|=|\?|\.|\/|\&|-)+)/g) == reg
+                                    &&
+                                    <p>A:{word1}<a href={reg} style={{color: "#00f"}} target="view_window" >{reg}</a>{word2}</p>
+                                }
+                                {
+                                    reg.match(/(http:\/\/|https:\/\/)((\w|=|\?|\.|\/|\&|-)+)/g) != reg
+                                    &&
+                                    <p>A:{word1}{word2}</p>
+                                }
+                                {
+                                    res.photo != ""
+                                    &&
+                                    <img onLoad={this.handleColChange} className="real" src={res.photo} id="real" alt="model test picture" onClick={this.setImgPreview} />
+                                }
+                                {
+                                    res.file != ""
+                                    &&
+                                    <div><Icon type="file" /><a href={reg.file} target="view_window" >{reg.file}</a></div>
+                                }
+                                {
+                                    true
+                                    &&
+                                    <div><Icon type="environment" /><a href="#/app/pages/Map" target="view_window" >查看地图</a></div>
+                                }
+                                <br />
+                                <h6>回答对你是否有帮助？</h6>
+                                <div className="answer_back" ><p data-value="1" onClick={this.handleBack}>很有帮助</p><p data-value="2" onClick={this.handleBack}>有点用</p><p data-value="3" onClick={this.handleBack}>完全没用</p></div>
+                                <ModalBox value={this.state} />
+                            </Card>
+                        </div>
                     </div>
-                    <div>
-                        <Card className="answer_margin" bordered={false} >
-                            {/*<img onLoad={this.handleColChange} styleName="real" src="https://avatars3.githubusercontent.com/u/583231?v=4" id="real" alt="model test picture" onClick={this.setImgPreview} />*/}
-                            
-                            {
-                                reg.match(/(http:\/\/|https:\/\/)((\w|=|\?|\.|\/|\&|-)+)/g) == reg
-                                &&
-                                <p>A:{word1}<a href={reg} style={{color: "#00f"}} target="view_window" >{reg}</a>{word2}</p>
-                            }
-                            {
-                                reg.match(/(http:\/\/|https:\/\/)((\w|=|\?|\.|\/|\&|-)+)/g) != reg
-                                &&
-                                <p>A:{word1}{word2}</p>
-                            }
-                            {
-                                res.photo != ""
-                                &&
-                                <img onLoad={this.handleColChange} className="real" src={res.photo} id="real" alt="model test picture" onClick={this.setImgPreview} />
-                            }
-                            {
-                                res.file != ""
-                                &&
-                                <div><Icon type="file" /><a href={reg.file} target="view_window" >{reg.file}</a></div>
-                            }
-                            <br />
-                            <h6>回答对你是否有帮助？</h6>
-                            <div className="answer_back" ><p data-value="1" onClick={this.handleBack}>很有帮助</p><p data-value="2" onClick={this.handleBack}>有点用</p><p data-value="3" onClick={this.handleBack}>完全没用</p></div>
-                            <ModalBox value={this.state} />
-                        </Card>
-                    </div>
-                </div>
-            );
-            console.log("卡片id"+this.state.cards[this.state.i-1].key)
-            this.setState({
-                answer: res.answer,
-                value: '',
-                data2: result.data.askId,
-            });
-            var div1=document.getElementById('dialog');
-            var div2=document.getElementById('inputBox');
-            console.log(div1.scrollHeight+": "+div1.clientHeight);
-            console.log(div2.scrollHeight+": "+div2.clientHeight);
-            div2.style.top = div1.scrollHeight+"px";
-            console.log(div2.style.top);
-            //alert("顶部："+div1.scrollTop+"高度："+div1.scrollHeight+"差值："+(div1.scrollHeight-div1.scrollTop));
-            div1.scrollTop=div1.scrollHeight;
-            /*
-            *  图片加载有延迟，导致渲染后输入框隐藏在对话窗口下面
-            *  判断回答中是否含有图片，减去图片大小使得显示在对话框中
-            */
-            if(res.photo != ""){
-                div2.style.top = div1.scrollHeight-parseInt("120")+"px";
-            }
-            
-            this.setState({
-                inputHeight: div1.scrollHeight
-            });
+                );
+                console.log("卡片id"+this.state.cards[this.state.i-1].key)
+                this.setState({
+                    answer: res.answer,
+                    value: '',
+                    data2: this.props.ask.getQuestionAnswer.data.askId,
+                });
+                var div1=document.getElementById('dialog');
+                var div2=document.getElementById('inputBox');
+                console.log(div1.scrollHeight+": "+div1.clientHeight);
+                console.log(div2.scrollHeight+": "+div2.clientHeight);
+                div2.style.top = div1.scrollHeight+"px";
+                console.log(div2.style.top);
+                //alert("顶部："+div1.scrollTop+"高度："+div1.scrollHeight+"差值："+(div1.scrollHeight-div1.scrollTop));
+                div1.scrollTop=div1.scrollHeight;
+                /*
+                *  图片加载有延迟，导致渲染后输入框隐藏在对话窗口下面
+                *  判断回答中是否含有图片，减去图片大小使得显示在对话框中
+                */
+                if(res.photo != ""){
+                    div2.style.top = div1.scrollHeight-parseInt("120")+"px";
+                }
+                
+                this.setState({
+                    inputHeight: div1.scrollHeight
+                });
 
-        }.bind(this));
-        event.preventDefault();
+            }
+        });
     }
     handleSetQuestion(event){
         console.log(event.target.textContent);
@@ -222,9 +243,23 @@ class Forms extends React.Component {
         document.getElementById("question").focus();
     }
     handleBack(event){
-        $.get("http://qa.ksust.com/feedback.do", {askId:this.state.data2, feedbackId: event.target.getAttribute("data-value")}, function(status){
-          message.success('你的反馈信息我们已经收到啦！');
-        }.bind(this));
+        this.props.dispatch(feedback({
+            askId:this.state.data2,
+            feedbackId: event.target.getAttribute("data-value")
+        })).then(() => {
+            console.log('this.props.ask');
+            console.log(this.props.ask);
+            if (!!this.props.ask.feedback) {
+                if(this.props.ask.feedback.status == "success"){
+                    message.success("评价成功！");
+                }
+            }else{
+                message.success("评价失败，请稍后再试！");
+            }
+        });
+        // $.get("http://qa.ksust.com/feedback.do", {askId:this.state.data2, feedbackId: event.target.getAttribute("data-value")}, function(status){
+        //   message.success('你的反馈信息我们已经收到啦！');
+        // }.bind(this));
         // alert("thsi: "+this.state.data2);
     }
     render() {
@@ -328,4 +363,4 @@ class Forms extends React.Component {
     }
 }
 
-export default CSSModules(Forms, styles);
+export default Ask;

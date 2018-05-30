@@ -1,8 +1,6 @@
-/**
- * Created by hao.cheng on 2017/4/13.
- */
+
 import React, { Component } from 'react';
-import { Menu, Icon, Layout, Badge, Popover,Button,message, Modal,Form,  Input,  Checkbox } from 'antd';
+import { Menu, Icon, Layout, Badge, Popover,Button,message, Modal,Form,  Input,  Checkbox,Row,Col } from 'antd';
 import screenfull from 'screenfull';
 import { gitOauthToken, gitOauthInfo } from '../axios';
 import { queryString } from '../utils';
@@ -13,10 +11,21 @@ import { withRouter } from 'react-router-dom';
 import { Link,hashHistory,browserHistory } from 'react-router';
 import { bindActionCreators } from 'redux';
 import { fetchData, receiveData } from '@/action';
+import {
+    login,
+    getCaptcha,
+} from '../action/login';
+import {
+    encodePS,
+} from '../utils/index';
 const { Header } = Layout;
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
 const FormItem = Form.Item;
+
+@connect(state => ({
+    login: state.login,
+}))
 
 class HeaderCustom extends Component {
     constructor(props){
@@ -24,11 +33,14 @@ class HeaderCustom extends Component {
         this.state = {
             user: '',
             visible: false,
+            verifyCodePic: '',
+            token: '',
         }
     }
     componentWillMount() {
         const { receiveData } = this.props;
         receiveData(null, 'auth');
+        this.resetPic();
     }
     componentDidMount() {
         const QueryString = queryString();
@@ -122,6 +134,7 @@ class HeaderCustom extends Component {
                     message.success("用户登录成功");
                 }
             }
+            this.getLoginMessage(values);
         });
         this.setState({
             visible: false,
@@ -130,11 +143,45 @@ class HeaderCustom extends Component {
     gitHub = () => {
         window.location.href = 'https://github.com/login/oauth/authorize?client_id=792cdcd244e98dcd2dee&redirect_uri=http://localhost:3006/&scope=user&state=reactAdmin';
     };
+    resetPic(e) {
+        console.log(e);
+        this.props.dispatch(getCaptcha()).then(() => {
+            console.log('this.props.login');
+            console.log(this.props.login.getCaptcha);
+            if (!!this.props.login.getCaptcha) {
+                this.setState({
+                    verifyCodePic: this.props.login.getCaptcha.data.captchaImage,
+                    token: this.props.login.getCaptcha.data.token,
+                });
+            }
+        });
+    }
+    getLoginMessage(value){
+
+        this.props.dispatch(login({
+            username: value.userNameLogin,
+            password: encodePS(value.passwordLogin),
+            captcha: value.codePiclgLogin,
+            token: this.state.token,
+        })).then(() => {
+            console.log('this.props.login');
+            console.log(this.props.login);
+            if (!!this.props.login.getLogin) {}
+        });
+    }
     render() {
         const { responsive, path } = this.props;
         console.log('this.state');
         console.log(this.state);
         const { getFieldDecorator } = this.props.form;
+        const formItemLayout = {
+            labelCol: {
+                span: 7
+            },
+            wrapperCol: {
+                span: 12
+            },
+        };
         return (
             <Header style={{ background: '#fff', padding: 0, height: 65 }} className="custom-theme" >
                 {
@@ -184,29 +231,36 @@ class HeaderCustom extends Component {
                     </SubMenu>
                 </Menu>
                 
-                <Modal title="登录" footer={null} style={{maxWidth: '400px'}} visible={this.state.visible} onOk={this.handleOk} onCancel={this.handleCancel} >
+                <Modal title="登录" footer={null}  visible={this.state.visible} onOk={this.handleOk} onCancel={this.handleCancel} >
                     <Form onSubmit={this.handleSubmit}>
-                        <FormItem>
-                            {getFieldDecorator('userName', {
+                        <FormItem {...formItemLayout} label="用户名" hasFeedback>
+                            {getFieldDecorator('userNameLogin', {
                                 rules: [{ required: true, message: '请输入用户名!' }],
                             })(
                                 <Input prefix={<Icon type="user" style={{ fontSize: 13 }} />} placeholder="管理员输入admin, 游客输入guest" />
                             )}
                         </FormItem>
-                        <FormItem>
-                            {getFieldDecorator('password', {
+                        <FormItem {...formItemLayout} label="密码" hasFeedback>
+                            {getFieldDecorator('passwordLogin', {
                                 rules: [{ required: true, message: '请输入密码!' }],
                             })(
                                 <Input prefix={<Icon type="lock" style={{ fontSize: 13 }} />} type="password" placeholder="管理员输入admin, 游客输入guest" />
                             )}
                         </FormItem>
+                        <FormItem {...formItemLayout} label="验证码" hasFeedback>
+                            <Row>   
+                                <Col span={11}>
+                                    {getFieldDecorator('codePiclgLogin',{
+                                    rules:[{
+                                        required:true,
+                                        message:'验证码不能为空',
+                                    }],
+                                    })(<Input placeholder="请输入验证码" />)}
+                                </Col>
+                                <Col span={11} offset={2}><img ref="pic" alt="验证码" src={this.state.verifyCodePic} onClick={this.resetPic.bind(this)}/></Col>
+                            </Row>
+                        </FormItem>
                         <FormItem>
-                            {getFieldDecorator('remember', {
-                                valuePropName: 'checked',
-                                initialValue: true,
-                            })(
-                                <Checkbox>记住我</Checkbox>
-                            )}
                             <a className="login-form-forgot" href="" style={{float: 'right'}}>忘记密码</a>
                             <Button type="primary" htmlType="submit" className="login-form-button" style={{width: '100%'}}>
                                 登录
@@ -218,6 +272,7 @@ class HeaderCustom extends Component {
                         </FormItem>
                     </Form>
                 </Modal>
+                
                 <style>{`
                     .ant-menu-submenu-horizontal > .ant-menu {
                         width: 120px;

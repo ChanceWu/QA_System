@@ -1,7 +1,6 @@
-/**
- * Created by hao.cheng on 2017/4/28.
- */
+
 // 获取url的参数
+var md5 = require('md5');
 export const queryString = () => {
     let _queryString = {};
     const _query = window.location.search.substr(1);
@@ -18,4 +17,10 @@ export const queryString = () => {
         }
     });
     return _queryString;
+};
+
+
+export function encodePS(password) {
+    password = md5(password);
+    return password;
 };

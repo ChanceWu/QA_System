@@ -2,7 +2,16 @@ import React from 'react';
 import $ from 'jquery';
 import { Modal, Button, message } from 'antd';
 import CSSModules from 'react-css-modules';
+import { connect } from 'react-redux';
+import {
+    supplementAnswer,
+} from '../../action/ask';
 import styles from './styles.less';
+
+@connect(state => ({
+	ask: state.ask,
+}))
+@CSSModules(styles)
 
 class ModalBox extends React.Component {
     
@@ -28,14 +37,27 @@ class ModalBox extends React.Component {
 	onClickOk(event){
 		var an = document.getElementById("modal_input");
 		console.log(an.value);
+		console.log(this.props.value.questionId);
+		console.log(this.state.myAnswer);
 		
 		this.setState({
 			myAnswer: this.state.value,
 		});
-		// alert("userId: "+ this.state.userId);
-		$.post("http://qa.ksust.com/saveSubmitReply.do", {askId: this.props.value.data2, submit: this.state.myAnswer}, function(data,status){
+		this.props.dispatch(supplementAnswer({
+			askId: this.props.value.questionId,
+			submit: this.state.myAnswer
+		})).then(() => {
+			if(!!this.props.ask.supplementAnswer){
+				if(this.props.ask.supplementAnswer.status == "success"){
+                    message.success("补充答案成功！");
+                }
+            }else{
+                message.success("补充答案失败，请稍后再试！");
+            }
+		})
+		/*$.post("http://qa.ksust.com/saveSubmitReply.do", {askId: this.props.value.data2, submit: this.state.myAnswer}, function(data,status){
 	      message.success('你的补充回答我们已经收到啦！');
-	    }.bind(this));
+	    }.bind(this));*/
   		this.setModal1Visible(false);
 	}
 	
@@ -61,4 +83,4 @@ class ModalBox extends React.Component {
 	}
 }
 
-export default CSSModules(ModalBox, styles);
+export default ModalBox;

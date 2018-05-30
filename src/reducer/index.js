@@ -1,8 +1,8 @@
-/**
- * Created by 叶子 on 2017/7/30.
- */
+
 import { combineReducers } from 'redux';
 import * as type from '../action/type';
+import ask from './ask';
+import login from './login';
 
 const handleData = (state = {isFetching: true, data: {}}, action) => {
     switch (action.type) {
@@ -28,5 +28,7 @@ const httpData = (state = {}, action) => {
 };
 
 export default combineReducers({
-    httpData
+    httpData,
+    ask,
+    login,
 });
