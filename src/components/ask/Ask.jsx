@@ -253,11 +253,11 @@ class Ask extends React.Component {
              console.log('this.props.ask');
              console.log(this.props.ask);
              if (!!this.props.ask.feedback) {
-                 if(this.props.ask.feedback.status == "success"){
+                 if(this.props.ask.feedback.status == "SUCCESS"){
                      message.success("评价成功！");
                  }
              }else{
-                 message.success("评价失败，请稍后再试！");
+                 message.error("评价失败，请稍后再试！");
              }
          });
          // $.get("http://qa.ksust.com/feedback.do", {askId:this.state.data2, feedbackId: event.target.getAttribute("data-value")}, function(status){
@@ -271,7 +271,8 @@ class Ask extends React.Component {
                  <div >
                      <Row gutter={6} className="chatRow" >
                          <div>
-                             <Col id="dialog" className="chatCol" xs={{ span: 24, offset: 0 }} sm={{ span: 24, offset: 0 }} md={{ span: 24, offset: 0 }} lg={{ span: 14, offset: 1 }} >
+                         <Col xs={{ span: 24, offset: 0 }} sm={{ span: 24, offset: 0 }} md={{ span: 24, offset: 0 }} lg={{ span: 14, offset: 1 }} >
+                             <Col id="dialog" className="chatCol">
                                 {/*图片预览模态框*/}
                                 <div className="motai" id="mo">
                                     <span className="close" id="close">X</span>
@@ -281,7 +282,7 @@ class Ask extends React.Component {
                                 {this.state.cards}
                                 
                             </Col>
-                            <Col id="dialog"  xs={{ span: 24, offset: 0 }} sm={{ span: 24, offset: 0 }} md={{ span: 24, offset: 0 }} lg={{ span: 14, offset: 1 }} >
+                            <Col>
                                 <div id="inputBox" className="chatCol_Input" >
                                     <form onSubmit={this.handleSubmit}>
                                         <label className="lab">
@@ -302,6 +303,7 @@ class Ask extends React.Component {
                                 </div>
                                 
                             </Col>
+                        </Col>
  
                          </div>
                          {

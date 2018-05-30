@@ -27,7 +27,7 @@ class SiderCustom extends Component {
     componentDidMount() {
         console.log('this.props.auth.data');
         console.log(this.props.auth.data);
-        if(this.props.auth.data&&this.props.auth.data.uid==1){
+        if(localStorage.user&&eval("("+localStorage.user+")").uid==1){
             this.setState({
                 menusSider: menusAdmin,
             });
@@ -36,7 +36,7 @@ class SiderCustom extends Component {
                 menusSider: menus,
             });
         }
-        
+        console.log(this.state.menusSider);
         this.setMenuOpen(this.props);
     }
     componentWillReceiveProps(nextProps) {
@@ -50,6 +50,9 @@ class SiderCustom extends Component {
             openKey: pathname.substr(0, pathname.lastIndexOf('/')),
             selectedKey: pathname
         });
+        console.log('selectedKey');
+        console.log(this.state.menusSider);
+        console.log(pathname);
     };
     onCollapse = (collapsed) => {
         console.log(collapsed);

@@ -48,11 +48,11 @@ class ModalBox extends React.Component {
 			submit: this.state.myAnswer
 		})).then(() => {
 			if(!!this.props.ask.supplementAnswer){
-				if(this.props.ask.supplementAnswer.status == "success"){
+				if(this.props.ask.supplementAnswer.status == "SUCCESS"){
                     message.success("补充答案成功！");
                 }
             }else{
-                message.success("补充答案失败，请稍后再试！");
+                message.error("补充答案失败，请稍后再试！");
             }
 		})
 		/*$.post("http://qa.ksust.com/saveSubmitReply.do", {askId: this.props.value.data2, submit: this.state.myAnswer}, function(data,status){

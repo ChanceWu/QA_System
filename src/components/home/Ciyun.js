@@ -1,8 +1,10 @@
 import React from 'react';
+import configs from '../../axios/config';
 //导入echarts
 var echarts = require('echarts/lib/echarts') //必须
 require('echarts-wordcloud');
 require('echarts/lib/component/title') //标题插件
+const hostUrl = configs.hostUrl;
 export default class Ciyun extends React.Component {
 	constructor(props) {
 		super(props);
@@ -23,7 +25,7 @@ export default class Ciyun extends React.Component {
         	// $("#menuId li:first").attr("class"," ant-menu-item ");
         	// $("#menuId li:last").attr("class"," ant-menu-item ant-menu-item-selected ");
 		    console.log(this);
-		    window.location.href="/#/app/ask/Ask?value="+params.data.name+"&key=1";
+		    window.location.href= hostUrl+"/ask/Ask?value="+params.data.name+"&key=1";
 		});
         window.onresize=myChart.resize;
     }

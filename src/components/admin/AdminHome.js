@@ -8,7 +8,8 @@ class AdminHome extends React.Component {
         return ( 
             <div className="gutter-example">
                 <div className="ant-layout-content">
-                    <a href="http://localhost:3006/#/app/home/index">返回</a>
+                    {/*<a href="http://localhost:3006/#/app/home/index">返回</a>*/}
+                    管理员主页
                 </div>
             </div>
             

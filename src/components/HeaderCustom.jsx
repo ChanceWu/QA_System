@@ -33,6 +33,7 @@ class HeaderCustom extends Component {
         this.state = {
             user: '',
             visible: false,
+            visibleModal: false,
             verifyCodePic: '',
             token: '',
         }
@@ -93,17 +94,17 @@ class HeaderCustom extends Component {
     showModal = () => {
         console.log('showModal');
         this.setState({
-          visible: true,
+          visibleModal: true,
         });
     }
     handleOk = (e) => {
         this.setState({
-          visible: false,
+          visibleModal: false,
         });
     }
     handleCancel = (e) => {
         this.setState({
-          visible: false,
+          visibleModal: false,
         });
     }
     logout = () => {
@@ -125,19 +126,20 @@ class HeaderCustom extends Component {
             if (!err) {
                 console.log('Received values of form: ', values);
                 const { fetchData } = this.props;
-                if (values.userName === 'admin' && values.password === 'admin'){
+                if (values.userNameLogin === 'admin' && values.passwordLogin === 'admin'){
                     fetchData({funcName: 'admin', stateName: 'auth'});
                     message.success("管理员登录成功");
                 }
-                if (values.userName === 'guest' && values.password === 'guest'){
+                if (values.userNameLogin === 'guest' && values.passwordLogin === 'guest'){
                     fetchData({funcName: 'guest', stateName: 'auth'});
                     message.success("用户登录成功");
                 }
             }
-            this.getLoginMessage(values);
+            // this.getLoginMessage(values);
         });
         this.setState({
             visible: false,
+            visibleModal: false,
         });
     };
     gitHub = () => {
@@ -171,8 +173,8 @@ class HeaderCustom extends Component {
     }
     render() {
         const { responsive, path } = this.props;
-        console.log('this.state');
-        console.log(this.state);
+        console.log('this.props');
+        console.log(this.props);
         const { getFieldDecorator } = this.props.form;
         const formItemLayout = {
             labelCol: {
@@ -186,7 +188,7 @@ class HeaderCustom extends Component {
             <Header style={{ background: '#fff', padding: 0, height: 65 }} className="custom-theme" >
                 {
                     responsive.data.isMobile ? (
-                        <Popover content={<SiderCustom path={path} popoverHide={this.popoverHide} />} trigger="click" placement="bottomLeft" visible={this.state.visible} onVisibleChange={this.handleVisibleChange}>
+                        <Popover content={<SiderCustom popoverHide={this.popoverHide} />} trigger="click" placement="bottomLeft" visible={this.state.visible} onVisibleChange={this.handleVisibleChange}>
                             <Icon type="bars" className="trigger custom-trigger" />
                         </Popover>
                     ) : (
@@ -231,7 +233,7 @@ class HeaderCustom extends Component {
                     </SubMenu>
                 </Menu>
                 
-                <Modal title="登录" footer={null}  visible={this.state.visible} onOk={this.handleOk} onCancel={this.handleCancel} >
+                <Modal title="登录" footer={null}  visible={this.state.visibleModal} onOk={this.handleOk} onCancel={this.handleCancel} >
                     <Form onSubmit={this.handleSubmit}>
                         <FormItem {...formItemLayout} label="用户名" hasFeedback>
                             {getFieldDecorator('userNameLogin', {
