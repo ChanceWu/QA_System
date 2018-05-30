@@ -272,17 +272,20 @@ class Ask extends React.Component {
                      <Row gutter={6} className="chatRow" >
                          <div>
                              <Col id="dialog" className="chatCol" xs={{ span: 24, offset: 0 }} sm={{ span: 24, offset: 0 }} md={{ span: 24, offset: 0 }} lg={{ span: 14, offset: 1 }} >
-                                 {/*图片预览模态框*/}
-                                 <div className="motai" id="mo">
-                                     <span className="close" id="close">X</span>
-                                     <img className="motaiimg" id="moimg" />
-                                     {/*<div styleName="caption" id="caption"></div>*/}
-                                 </div>
-                                 {this.state.cards}
-                                 <div id="inputBox" className="chatCol_Input" >
-                                     <form onSubmit={this.handleSubmit}>
-                                         <label className="lab">
-                                             {
+                                {/*图片预览模态框*/}
+                                <div className="motai" id="mo">
+                                    <span className="close" id="close">X</span>
+                                    <img className="motaiimg" id="moimg" />
+                                    {/*<div styleName="caption" id="caption"></div>*/}
+                                </div>
+                                {this.state.cards}
+                                
+                            </Col>
+                            <Col id="dialog"  xs={{ span: 24, offset: 0 }} sm={{ span: 24, offset: 0 }} md={{ span: 24, offset: 0 }} lg={{ span: 14, offset: 1 }} >
+                                <div id="inputBox" className="chatCol_Input" >
+                                    <form onSubmit={this.handleSubmit}>
+                                        <label className="lab">
+                                            {
                                                  window.screen.availWidth > 900
                                                  &&
                                                  "请输入问题:"
@@ -292,12 +295,13 @@ class Ask extends React.Component {
                                                  &&
                                                  "问问:"
                                              }
-                                              <input id="question" className="longer" type="text" value={this.state.value} onChange={this.handleChange} />
-                                         </label>
-                                         <input className="bigger" type="submit" value="Submit" />
-                                     </form>
-                                 </div>
-                             </Col>
+                                             <input id="question" className="longer" type="text" value={this.state.value} onChange={this.handleChange} />
+                                        </label>
+                                        <input className="bigger" type="submit" value="Submit" />
+                                    </form>
+                                </div>
+                                
+                            </Col>
  
                          </div>
                          {
