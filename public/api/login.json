@@ -1,0 +1,8 @@
+{
+  "data": {
+    "authorization": "JWT-code", 
+    "roleId": "1", 
+    "username": "Chance"
+  }, 
+  "status": "LOGIN_SUCCESS"
+}

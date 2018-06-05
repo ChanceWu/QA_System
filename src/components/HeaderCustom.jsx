@@ -32,6 +32,7 @@ class HeaderCustom extends Component {
         super(props);
         this.state = {
             user: '',
+            userName: '',
             visible: false,
             visibleModal: false,
             verifyCodePic: '',
@@ -110,7 +111,11 @@ class HeaderCustom extends Component {
     logout = () => {
         console.log('logout');
         localStorage.removeItem('user');
-        this.props.history.push('/')
+        localStorage.removeItem('token');
+        localStorage.removeItem('userName');
+        localStorage.removeItem('authorization');
+        this.props.history.push('/');
+        console.log(localStorage);
     };
     popoverHide = () => {
         this.setState({
@@ -135,7 +140,7 @@ class HeaderCustom extends Component {
                     message.success("用户登录成功");
                 }
             }
-            // this.getLoginMessage(values);
+            this.getLoginMessage(values);
         });
         this.setState({
             visible: false,
@@ -153,8 +158,10 @@ class HeaderCustom extends Component {
             if (!!this.props.login.getCaptcha) {
                 this.setState({
                     verifyCodePic: this.props.login.getCaptcha.data.captchaImage,
-                    token: this.props.login.getCaptcha.data.token,
+                    token: this.props.login.getCaptcha.data.uuid,
                 });
+                localStorage.setItem('token', JSON.stringify(this.state.token));
+                console.log(localStorage.getItem('token'));
             }
         });
     }
@@ -166,9 +173,25 @@ class HeaderCustom extends Component {
             captcha: value.codePiclgLogin,
             token: this.state.token,
         })).then(() => {
-            console.log('this.props.login');
-            console.log(this.props.login);
-            if (!!this.props.login.getLogin) {}
+            console.log('this.props.login.getLogin');
+            console.log(this.props.login.getLogin);
+            
+            if (!!this.props.login.getLogin) {
+                if(this.props.login.getLogin.status === 'CAPTCHA_ERROR'){
+                    message.error('验证码错误');
+                }else if(this.props.login.getLogin.status === 'LOGIN_ERROR'){
+                    message.error('账号或密码错误');
+                }else if(this.props.login.getLogin.status === 'LOGIN_SUCCESS'){
+                    message.success('登陆成功');
+                    localStorage.userName = this.props.login.getLogin.data.username;
+                    localStorage.authorization = this.props.login.getLogin.data.authorization;
+                    // this.setState({
+                    //     userName: localStorage.userName
+                    // })
+                }else{
+                    message.error('出现未知错误');
+                }
+            }
         });
     }
     render() {
@@ -204,12 +227,12 @@ class HeaderCustom extends Component {
                         <Icon type="arrows-alt" onClick={this.screenFull} />
                     </Menu.Item>*/}
                     <Menu.Item key="name" >
-                        <span>{this.state.user.userName}</span>
+                        <span>{localStorage.userName}</span>
                     </Menu.Item>
                     <SubMenu title={
                         <span className="avatar">
                         {
-                            this.state.user.userName?<span><img src={avater} alt="头像" /><i className="on bottom b-white" /></span>:<span>未登录</span>
+                            localStorage.userName?<span><img src={avater} alt="头像" /><i className="on bottom b-white" /></span>:<span>未登录</span>
                         }
                         </span>
                     }>

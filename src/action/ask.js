@@ -2,10 +2,9 @@ import axios from 'axios';
 import actions from './actions';
 import configs from '../axios/config';
 import Qs from 'qs';
-// import {
-//     toQuery,
-//     getTokenHeader
-// } from '../utils/utils';
+import {
+    getTokenHeader
+} from '../utils/index';
 const {
 	GET_ANSWER_SUCCESS,
 	GET_ANSWER_FAILURE,
@@ -21,7 +20,10 @@ const baseUrl = configs.baseUrl;
 export function getQuestionAnswer(query = ''){
 	return async(dispatch) => {
 		try {
-			const data = (await axios.get(`${baseUrl}/ask.do?${Qs.stringify(query)}`)).data;
+			let headers = getTokenHeader({});
+			const data = (await axios.get(`${baseUrl}/ask.do?${Qs.stringify(query)}`,
+				Qs.stringify({headers: headers})
+			)).data;
 			dispatch({
 				type: GET_ANSWER_SUCCESS,
 				data: data

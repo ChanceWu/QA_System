@@ -20,6 +20,15 @@ export const queryString = () => {
 };
 
 
+export function getTokenHeader(header) {
+    let _header = Object.assign({}, header);
+    if (!!localStorage.token) {
+        _header['Authorization'] = `Bearer ${localStorage.token}`;
+    }
+    return _header;
+};
+
+
 export function encodePS(password) {
     password = md5(password);
     return password;
