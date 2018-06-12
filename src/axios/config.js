@@ -7,5 +7,6 @@ export const MOCK_AUTH_VISITOR = MOCK_AUTH + '/visitor';                       /
 
 export default{
 	baseUrl: "http://qa.ksust.com/api",
+	// baseUrl: 'http://192.168.3.101:8080/api',
 	hostUrl: "http://qa.ksust.com/static/#/app",
 }

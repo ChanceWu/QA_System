@@ -27,7 +27,7 @@ class SiderCustom extends Component {
     componentDidMount() {
         console.log('this.props.auth.data');
         console.log(this.props.auth.data);
-        if(localStorage.user&&eval("("+localStorage.user+")").uid==1){
+        if(localStorage.roleId&&localStorage.roleId==1){
             this.setState({
                 menusSider: menusAdmin,
             });

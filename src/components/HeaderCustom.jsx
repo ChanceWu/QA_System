@@ -63,7 +63,7 @@ class HeaderCustom extends Component {
             });
         }
     };
-    componentWillReceiveProps(nextProps) {
+    /*componentWillReceiveProps(nextProps) {
         const { auth: nextAuth = {} } = nextProps;
         const { history } = this.props;
         if (nextAuth.data && nextAuth.data.uid) {   // 判断是否登陆
@@ -80,7 +80,7 @@ class HeaderCustom extends Component {
             } 
         } 
         
-    }
+    }*/
     /*screenFull = () => {
         if (screenfull.enabled) {
             screenfull.request();
@@ -111,9 +111,10 @@ class HeaderCustom extends Component {
     logout = () => {
         console.log('logout');
         localStorage.removeItem('user');
-        localStorage.removeItem('token');
+        localStorage.token='';
         localStorage.removeItem('userName');
-        localStorage.removeItem('authorization');
+        localStorage.removeItem('roleId');
+        localStorage.authorization='';
         this.props.history.push('/');
         console.log(localStorage);
     };
@@ -156,11 +157,12 @@ class HeaderCustom extends Component {
             console.log('this.props.login');
             console.log(this.props.login.getCaptcha);
             if (!!this.props.login.getCaptcha) {
+                localStorage.token='';
                 this.setState({
                     verifyCodePic: this.props.login.getCaptcha.data.captchaImage,
-                    token: this.props.login.getCaptcha.data.uuid,
+                    token: this.props.login.getCaptcha.data.token,
                 });
-                localStorage.setItem('token', JSON.stringify(this.state.token));
+                localStorage.token = JSON.stringify(this.state.token);
                 console.log(localStorage.getItem('token'));
             }
         });
@@ -185,9 +187,12 @@ class HeaderCustom extends Component {
                     message.success('登陆成功');
                     localStorage.userName = this.props.login.getLogin.data.username;
                     localStorage.authorization = this.props.login.getLogin.data.authorization;
-                    // this.setState({
-                    //     userName: localStorage.userName
-                    // })
+                    localStorage.roleId = this.props.login.getLogin.data.roleId;
+                    this.setState({
+                        userName: localStorage.userName
+                    });
+                    browserHistory.push(`/#/app/admin/adminHome`);
+                    window.location.reload();
                 }else{
                     message.error('出现未知错误');
                 }
@@ -241,11 +246,11 @@ class HeaderCustom extends Component {
                             <Menu.Item key="setting:2">个人信息</Menu.Item>*/}
                             
                             {
-                                this.state.user.userName&&
+                                localStorage.userName&&
                                 <Menu.Item key="logout"><span>退出登录</span></Menu.Item>
                             }
                             {
-                                !this.state.user.userName&&
+                                !localStorage.userName&&
                                 <Menu.Item key="login"><span>登录</span></Menu.Item>
                             }
                         </MenuItemGroup>
@@ -272,8 +277,8 @@ class HeaderCustom extends Component {
                                 <Input prefix={<Icon type="lock" style={{ fontSize: 13 }} />} type="password" placeholder="管理员输入admin, 游客输入guest" />
                             )}
                         </FormItem>
-                        <FormItem {...formItemLayout} label="验证码" hasFeedback>
-                            <Row>   
+                        <FormItem {...formItemLayout} label="验证码" >
+                            <Row style={{lineHeight:"27px"}}>   
                                 <Col span={11}>
                                     {getFieldDecorator('codePiclgLogin',{
                                     rules:[{
@@ -282,10 +287,10 @@ class HeaderCustom extends Component {
                                     }],
                                     })(<Input placeholder="请输入验证码" />)}
                                 </Col>
-                                <Col span={11} offset={2}><img ref="pic" alt="验证码" src={this.state.verifyCodePic} onClick={this.resetPic.bind(this)}/></Col>
+                                <Col span={11} offset={2}><img style={{width:"108px",height:"32px"}} ref="pic" alt="验证码" src={this.state.verifyCodePic} onClick={this.resetPic.bind(this)}/></Col>
                             </Row>
                         </FormItem>
-                        <FormItem>
+                        <FormItem style={{paddingLeft:"50px",paddingRight:"50px"}}>
                             <a className="login-form-forgot" href="" style={{float: 'right'}}>忘记密码</a>
                             <Button type="primary" htmlType="submit" className="login-form-button" style={{width: '100%'}}>
                                 登录

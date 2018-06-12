@@ -15,8 +15,8 @@ const baseUrl = configs.baseUrl;
 export function login(query = ''){
 	return async(dispatch) => {
 		try {
-			// const data = (await axios.get(`${baseUrl}/admin/login.do?${Qs.stringify(query)}`)).data;
-			const data = (await axios.get('./api/login.json')).data;
+			const data = (await axios.post(`${baseUrl}/admin/login.do`,Qs.stringify(query))).data;
+			// const data = (await axios.get(`./api/login.json?${Qs.stringify(query)}`)).data;
 			dispatch({
 				type: LOGIN_SUCCESS,
 				data: data
@@ -34,8 +34,8 @@ export function login(query = ''){
 export function getCaptcha(query = ''){
 	return async(dispatch) => {
 		try {
-			// const data = (await axios.get(`${baseUrl}/tool/getCaptcha.do${query}`)).data;
-			const data = (await axios.get('./api/getCaptcha.json')).data;
+			const data = (await axios.get(`${baseUrl}/tool/getCaptcha.do${query}`)).data;
+			// const data = (await axios.get('./api/getCaptcha.json')).data;
 			dispatch({
 				type: GET_CAPTCHA_SUCCESS,
 				data: data
